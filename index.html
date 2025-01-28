@@ -67,6 +67,13 @@
             }
 
             const data = await response.json();
+            console.log("Полученные данные после фарма сыра:", data);
+
+            // Проверим, если пришли корректные данные
+            if (data.cheese === undefined || data.upgrade === undefined) {
+                console.error("Ошибка: сыр или уровень не были возвращены!");
+                return;
+            }
 
             // Сохраняем данные в localStorage
             localStorage.setItem('cheese', data.cheese);
@@ -92,8 +99,10 @@
         const savedUpgrade = localStorage.getItem('upgrade');
 
         if (savedCheese && savedUpgrade) {
+            console.log("Загружены данные из localStorage:", savedCheese, savedUpgrade);
             updateUI(savedCheese, savedUpgrade);
         } else {
+            console.log("Данные не найдены в localStorage, запрашиваем с сервера...");
             fetchUserData();
         }
     };
