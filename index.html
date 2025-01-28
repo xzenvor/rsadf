@@ -4,105 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rat Kombat</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f0f0;
-            padding: 20px;
+    <script>
+        const API_BASE_URL = "http://127.0.0.1:5000";
+        let userId = localStorage.getItem("user_id");
+
+        async function getUserData() {
+            const response = await fetch(`${API_BASE_URL}/get_user_data/${userId}`);
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("cheeseBalance").innerText = `Сыр: ${data.cheese}`;
+            }
         }
-        h1 {
-            color: #4CAF50;
+
+        async function earnCheese() {
+            const response = await fetch(`${API_BASE_URL}/earn_cheese`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: userId })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("cheeseBalance").innerText = `Сыр: ${data.cheese}`;
+            }
         }
-        .button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 5px;
+
+        async function upgrade() {
+            const response = await fetch(`${API_BASE_URL}/update_user_data`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: userId, cheese: 0, upgrade: 2 })
+            });
+
+            if (response.ok) {
+                alert("✅ Улучшение куплено!");
+                getUserData();
+            }
         }
-        .button:hover {
-            background-color: #45a049;
-        }
-        .stats {
-            margin-top: 20px;
-        }
-    </style>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!userId) {
+                userId = prompt("Введите ваш ID:");
+                localStorage.setItem("user_id", userId);
+            }
+            getUserData();
+        });
+    </script>
 </head>
 <body>
-
-    <h1>Добро пожаловать в Rat Kombat!</h1>
-    <div class="stats">
-        <p><strong>Ваши данные:</strong></p>
-        <p id="cheeseAmount">Сыр: 0</p>
-        <p id="level">Уровень: 1</p>
-    </div>
-
-    <button id="earnCheese" class="button">Заработать сыр</button>
-    <button id="shop" class="button">Магазин</button>
-    <button id="invite" class="button">Пригласить друга</button>
-
-<script>
-    // Получаем ID пользователя через WebApp
-    const userId = new URLSearchParams(window.location.search).get("user_id");  // Получаем ID из URL
-
-    // Инициализация данных
-    let cheeseAmount = 0;
-    let level = 1;
-
-    // Функция для получения данных пользователя
-    async function getUserData(userId) {
-        const response = await fetch(`http://127.0.0.1:5000/get_user_data/${userId}`);
-        if (response.ok) {
-            const data = await response.json();
-            cheeseAmount = data.cheese;
-            level = data.upgrade;
-            updateStats();
-        }
-    }
-
-    // Функция для обновления данных пользователя
-async function updateUserData(userId, cheese, upgrade) {
-    try {
-        const response = await fetch('http://127.0.0.1:5000/update_user_data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                user_id: userId,
-                cheese: cheese,
-                upgrade: upgrade
-            })
-        });
-        if (response.ok) {
-            console.log("Данные обновлены!");
-            updateStats();  // Обновляем данные на странице
-        } else {
-            console.error("Ошибка обновления данных.");
-        }
-    } catch (error) {
-        console.error("Ошибка сети:", error);
-    }
-}
-
-    // Обработка кнопки "Заработать сыр"
-    document.getElementById("earnCheese").addEventListener("click", function() {
-        cheeseAmount += 1; // Добавление 1 сыра за клик
-        level += 1; // Увеличение уровня
-        updateStats(); // Обновление данных на странице
-        updateUserData(userId, cheeseAmount, level);  // Обновление данных через API
-    });
-
-    // Получение начальных данных пользователя при загрузке страницы
-    getUserData(userId);
-</script>
-
+    <h1>🐀 Rat Kombat</h1>
+    <p id="cheeseBalance">Загрузка...</p>
+    <button onclick="earnCheese()">🐀 Заработать сыр</button>
+    <button onclick="upgrade()">⚡ Улучшение</button>
 </body>
 </html>
