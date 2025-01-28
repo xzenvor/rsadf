@@ -98,8 +98,9 @@
         const savedCheese = localStorage.getItem('cheese');
         const savedUpgrade = localStorage.getItem('upgrade');
 
+        console.log("Данные из localStorage:", savedCheese, savedUpgrade);
+
         if (savedCheese && savedUpgrade) {
-            console.log("Загружены данные из localStorage:", savedCheese, savedUpgrade);
             updateUI(savedCheese, savedUpgrade);
         } else {
             console.log("Данные не найдены в localStorage, запрашиваем с сервера...");
