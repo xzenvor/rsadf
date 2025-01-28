@@ -32,6 +32,12 @@
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('user_id');  // ID передается через URL
 
+    // Проверим, что userId существует
+    if (!userId) {
+        alert('User ID не найден!');
+        return;
+    }
+
     // Получаем данные с сервера для пользователя
     async function fetchUserData() {
         try {
@@ -52,7 +58,8 @@
 
     async function earnCheese() {
         try {
-            const response = await fetch('http://192.168.0.111:5000/earn_cheese', {  // Используем HTTPS
+            // Делаем POST-запрос на сервер
+            const response = await fetch('http://192.168.0.111:5000/earn_cheese', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -63,6 +70,8 @@
             const data = await response.json();
 
             if (response.ok) {
+                console.log('Новые данные получены:', data);
+
                 // Сохраняем данные в localStorage
                 localStorage.setItem(`cheese_${userId}`, data.cheese);
                 localStorage.setItem(`upgrade_${userId}`, data.upgrade);
@@ -92,6 +101,7 @@
         if (savedCheese && savedUpgrade) {
             updateUI(savedCheese, savedUpgrade);
         } else {
+            // Если данных в localStorage нет, получаем их с сервера
             fetchUserData();
         }
     };
