@@ -49,12 +49,10 @@
     <button id="invite" class="button">Пригласить друга</button>
 
     <script>
-        // Инициализация данных
         let cheeseAmount = 0;
         let level = 1;
-        const userId = "<6188424419>";  // Здесь должен быть ID пользователя, передаваемый через WebApp
+        const userId = "<USER_ID>";  // Здесь должен быть ID пользователя, передаваемый через WebApp
 
-        // Функция для получения данных пользователя
         async function getUserData(userId) {
             const response = await fetch(`http://127.0.0.1:5000/get_user_data/${userId}`);
             if (response.ok) {
@@ -62,10 +60,11 @@
                 cheeseAmount = data.cheese;
                 level = data.upgrade;
                 updateStats();
+            } else {
+                console.error("Ошибка получения данных", response);
             }
         }
 
-        // Функция для обновления данных пользователя
         async function updateUserData(userId, cheese, upgrade) {
             await fetch('http://127.0.0.1:5000/update_user_data', {
                 method: 'POST',
@@ -80,31 +79,26 @@
             });
         }
 
-        // Обновление данных на Web App
         function updateStats() {
             document.getElementById("cheeseAmount").textContent = "Сыр: " + cheeseAmount;
             document.getElementById("level").textContent = "Уровень: " + level;
         }
 
-        // Обработка кнопки "Заработать сыр"
         document.getElementById("earnCheese").addEventListener("click", function() {
-            cheeseAmount += 10; // Добавление сыра
-            level += 1; // Увеличение уровня
-            updateStats(); // Обновление данных на странице
-            updateUserData(userId, cheeseAmount, level);  // Обновление данных через API
+            cheeseAmount += 10; 
+            level += 1; 
+            updateStats(); 
+            updateUserData(userId, cheeseAmount, level);  
         });
 
-        // Обработка кнопки "Магазин"
         document.getElementById("shop").addEventListener("click", function() {
-            // Здесь можно добавить логику для открытия магазина
+            alert("Магазин пока не доступен.");
         });
 
-        // Обработка кнопки "Пригласить друга"
         document.getElementById("invite").addEventListener("click", function() {
-            // Логика для приглашения друга
+            alert("Пригласите друга по реферальной ссылке.");
         });
 
-        // Получение начальных данных пользователя при загрузке страницы
         getUserData(userId);
     </script>
 
