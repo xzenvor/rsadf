@@ -41,6 +41,7 @@
     // Получаем данные с сервера для пользователя
     async function fetchUserData() {
         try {
+            console.log("Запрос данных пользователя с сервера...");
             const response = await fetch(`http://192.168.0.111:5000/get_user_data/${userId}`);
             const data = await response.json();
             if (response.ok) {
@@ -58,7 +59,7 @@
 
     async function earnCheese() {
         try {
-            // Делаем POST-запрос на сервер
+            console.log("Нажата кнопка фарма сыра...");
             const response = await fetch('http://192.168.0.111:5000/earn_cheese', {
                 method: 'POST',
                 headers: {
@@ -71,7 +72,6 @@
 
             if (response.ok) {
                 console.log('Новые данные получены:', data);
-
                 // Сохраняем данные в localStorage
                 localStorage.setItem(`cheese_${userId}`, data.cheese);
                 localStorage.setItem(`upgrade_${userId}`, data.upgrade);
@@ -88,6 +88,7 @@
 
     // Функция для обновления UI
     function updateUI(cheese, upgrade) {
+        console.log("Обновление UI...");
         document.getElementById('cheese-balance').textContent = `Баланс сыра: ${cheese}`;
         document.getElementById('upgrade-level').textContent = `Уровень: ${upgrade}`;
     }
