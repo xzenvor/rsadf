@@ -52,24 +52,32 @@
         // Инициализация данных
         let cheeseAmount = 0;
         let level = 1;
+        const userId = "<USER_ID>";  // Здесь должен быть ID пользователя, передаваемый через WebApp
 
-        // Функция для отправки данных в Telegram-бот
-        function sendDataToBot(data) {
-            const userChatId = "<USER_CHAT_ID>"; // Замените на настоящий chat_id
-            const token = "<YOUR_BOT_TOKEN>";  // Замените на ваш токен
-            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                method: "POST",
+        // Функция для получения данных пользователя
+        async function getUserData(userId) {
+            const response = await fetch(`http://127.0.0.1:5000/get_user_data/${userId}`);
+            if (response.ok) {
+                const data = await response.json();
+                cheeseAmount = data.cheese;
+                level = data.upgrade;
+                updateStats();
+            }
+        }
+
+        // Функция для обновления данных пользователя
+        async function updateUserData(userId, cheese, upgrade) {
+            await fetch('http://127.0.0.1:5000/update_user_data', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    chat_id: userChatId,
-                    text: data
+                    user_id: userId,
+                    cheese: cheese,
+                    upgrade: upgrade
                 })
-            })
-            .then(response => response.json())
-            .then(data => console.log('Success:', data))
-            .catch((error) => console.error('Error:', error));
+            });
         }
 
         // Обновление данных на Web App
@@ -83,19 +91,21 @@
             cheeseAmount += 10; // Добавление сыра
             level += 1; // Увеличение уровня
             updateStats(); // Обновление данных на странице
-            sendDataToBot(`+10 сыра и новый уровень! Сыр: ${cheeseAmount}, Уровень: ${level}`);
-            // Здесь отправляем данные в Telegram-бот, чтобы синхронизировать данные
+            updateUserData(userId, cheeseAmount, level);  // Обновление данных через API
         });
 
         // Обработка кнопки "Магазин"
         document.getElementById("shop").addEventListener("click", function() {
-            sendDataToBot("Открыт магазин!");
+            // Здесь можно добавить логику для открытия магазина
         });
 
         // Обработка кнопки "Пригласить друга"
         document.getElementById("invite").addEventListener("click", function() {
-            sendDataToBot("Приглашение отправлено!");
+            // Логика для приглашения друга
         });
+
+        // Получение начальных данных пользователя при загрузке страницы
+        getUserData(userId);
     </script>
 
 </body>
