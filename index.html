@@ -1,63 +1,77 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rat Kombat</title>
-    <script>
-        const API_BASE_URL = "http://127.0.0.1:5000";
-        let userId = localStorage.getItem("user_id");
-
-        async function getUserData() {
-            const response = await fetch(`${API_BASE_URL}/get_user_data/${userId}`);
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById("cheeseBalance").innerText = `Сыр: ${data.cheese}`;
-            }
+    <style>
+        #cheese-balance, #upgrade-level {
+            font-size: 24px;
+            margin: 10px;
         }
-
-        async function earnCheese() {
-    const response = await fetch(`${API_BASE_URL}/earn_cheese`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId })
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        document.getElementById("cheeseBalance").innerText = `Сыр: ${data.cheese}`;
-    } else {
-        alert("Ошибка при получении сыра!");
-    }
-}
-
-
-        async function upgrade() {
-            const response = await fetch(`${API_BASE_URL}/update_user_data`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: userId, cheese: 0, upgrade: 2 })
-            });
-
-            if (response.ok) {
-                alert("✅ Улучшение куплено!");
-                getUserData();
-            }
+        .button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            if (!userId) {
-                userId = prompt("Введите ваш ID:");
-                localStorage.setItem("user_id", userId);
-            }
-            getUserData();
-        });
-    </script>
+    </style>
 </head>
 <body>
-    <h1>🐀 Rat Kombat</h1>
-    <p id="cheeseBalance">Загрузка...</p>
-    <button onclick="earnCheese()">🐀 Заработать сыр</button>
-    <button onclick="upgrade()">⚡ Улучшение</button>
+
+<h1>Rat Kombat</h1>
+
+<div id="cheese-balance">Баланс сыра: 0</div>
+<div id="upgrade-level">Уровень: 1</div>
+
+<button class="button" onclick="earnCheese()">🐀 Фарми сыр</button>
+
+<script>
+    // Получаем данные с сервера для пользователя
+    let currentUserId = 12345;  // Твой идентификатор пользователя (для тестов)
+
+    async function earnCheese() {
+        const response = await fetch('http://127.0.0.1:5000/earn_cheese', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_id: currentUserId }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Сохраняем данные в localStorage
+            localStorage.setItem('cheese', data.cheese);
+            localStorage.setItem('upgrade', data.upgrade);
+
+            // Обновляем интерфейс
+            updateUI(data.cheese, data.upgrade);
+        } else {
+            console.error('Ошибка при обновлении баланса!');
+        }
+    }
+
+    // Функция для обновления UI
+    function updateUI(cheese, upgrade) {
+        document.getElementById('cheese-balance').textContent = `Баланс сыра: ${cheese}`;
+        document.getElementById('upgrade-level').textContent = `Уровень: ${upgrade}`;
+    }
+
+    // Инициализация данных из localStorage при загрузке страницы
+    window.onload = function () {
+        const cheese = localStorage.getItem('cheese');
+        const upgrade = localStorage.getItem('upgrade');
+
+        if (cheese && upgrade) {
+            updateUI(cheese, upgrade);
+        } else {
+            console.error('Нет данных для пользователя');
+        }
+    };
+</script>
+
 </body>
 </html>
