@@ -17,17 +17,20 @@
         }
 
         async function earnCheese() {
-            const response = await fetch(`${API_BASE_URL}/earn_cheese`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: userId })
-            });
+    const response = await fetch(`${API_BASE_URL}/earn_cheese`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId })
+    });
 
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById("cheeseBalance").innerText = `Сыр: ${data.cheese}`;
-            }
-        }
+    if (response.ok) {
+        const data = await response.json();
+        document.getElementById("cheeseBalance").innerText = `Сыр: ${data.cheese}`;
+    } else {
+        alert("Ошибка при получении сыра!");
+    }
+}
+
 
         async function upgrade() {
             const response = await fetch(`${API_BASE_URL}/update_user_data`, {
