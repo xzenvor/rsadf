@@ -52,7 +52,7 @@
         // Инициализация данных
         let cheeseAmount = 0;
         let level = 1;
-        const userId = "<USER_ID>";  // Здесь должен быть ID пользователя, передаваемый через WebApp
+        const userId = "<6188424419>";  // Здесь должен быть ID пользователя, передаваемый через WebApp
 
         // Функция для получения данных пользователя
         async function getUserData(userId) {
@@ -88,7 +88,7 @@
 
         // Обработка кнопки "Заработать сыр"
         document.getElementById("earnCheese").addEventListener("click", function() {
-            cheeseAmount += 10; // Добавление 10 сыра
+            cheeseAmount += 1; // Добавление 1 сыра за клик
             level += 1; // Увеличение уровня
             updateStats(); // Обновление данных на странице
             updateUserData(userId, cheeseAmount, level);  // Обновление данных через API
