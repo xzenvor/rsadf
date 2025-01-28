@@ -34,36 +34,44 @@
 
     // Получаем данные с сервера для пользователя
     async function fetchUserData() {
-        const response = await fetch(`http://192.168.0.111:5000/get_user_data/${userId}`);
-        const data = await response.json();
-        if (response.ok) {
-            // Обновляем UI
-            updateUI(data.cheese, data.upgrade);
-        } else {
-            console.error('Ошибка при получении данных пользователя');
+        try {
+            const response = await fetch(`http://192.168.0.111:5000/get_user_data/${userId}`);
+            const data = await response.json();
+            if (response.ok) {
+                // Обновляем UI
+                updateUI(data.cheese, data.upgrade);
+            } else {
+                console.error('Ошибка при получении данных пользователя');
+            }
+        } catch (error) {
+            console.error('Ошибка при запросе данных с сервера:', error);
         }
     }
 
     async function earnCheese() {
-        const response = await fetch('http://192.168.0.111:5000/earn_cheese', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ user_id: userId }),
-        });
+        try {
+            const response = await fetch('http://192.168.0.111:5000/earn_cheese', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: userId }),
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (response.ok) {
-            // Сохраняем данные в localStorage
-            localStorage.setItem('cheese', data.cheese);
-            localStorage.setItem('upgrade', data.upgrade);
+            if (response.ok) {
+                // Сохраняем данные в localStorage
+                localStorage.setItem('cheese', data.cheese);
+                localStorage.setItem('upgrade', data.upgrade);
 
-            // Обновляем интерфейс
-            updateUI(data.cheese, data.upgrade);
-        } else {
-            console.error('Ошибка при обновлении баланса!');
+                // Обновляем интерфейс
+                updateUI(data.cheese, data.upgrade);
+            } else {
+                console.error('Ошибка при обновлении баланса!');
+            }
+        } catch (error) {
+            console.error('Ошибка при запросе данных для фарма сыра:', error);
         }
     }
 
@@ -75,7 +83,15 @@
 
     // Инициализация данных при загрузке страницы
     window.onload = function () {
-        fetchUserData();
+        // Загружаем данные из localStorage, если они там есть
+        const savedCheese = localStorage.getItem('cheese');
+        const savedUpgrade = localStorage.getItem('upgrade');
+
+        if (savedCheese && savedUpgrade) {
+            updateUI(savedCheese, savedUpgrade);
+        } else {
+            fetchUserData();
+        }
     };
 </script>
 
