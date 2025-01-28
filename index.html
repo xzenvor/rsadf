@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rat Kombat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="game-container">
+        <h1>🐀 Добро пожаловать в Rat Kombat!</h1>
+        <div class="player-info">
+            <p>🐀 Ваш уровень: <span id="level">1</span></p>
+            <p>🧀 Ваш сыр: <span id="cheese">0</span></p>
+        </div>
+        <div class="game-controls">
+            <button id="earnCheese">Заработать сыр</button>
+            <button id="upgrade">Улучшить персонажа</button>
+            <button id="shop">Магазин</button>
+            <button id="referral">Пригласить друга</button>
+        </div>
+        <div class="game-footer">
+            <button id="logout">Выйти из игры</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
