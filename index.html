@@ -4,25 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rat Kombat</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .stats {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>🐀 Добро пожаловать в Rat Kombat!</h1>
-        <div class="player-info">
-            <p>🐀 Ваш уровень: <span id="level">1</span></p>
-            <p>🧀 Ваш сыр: <span id="cheese">0</span></p>
-        </div>
-        <div class="game-controls">
-            <button id="earnCheese">Заработать сыр</button>
-            <button id="upgrade">Улучшить персонажа</button>
-            <button id="shop">Магазин</button>
-            <button id="referral">Пригласить друга</button>
-        </div>
-        <div class="game-footer">
-            <button id="logout">Выйти из игры</button>
-        </div>
+
+    <h1>Добро пожаловать в Rat Kombat!</h1>
+    <div class="stats">
+        <p><strong>Ваши данные:</strong></p>
+        <p id="cheeseAmount">Сыр: 0</p>
+        <p id="level">Уровень: 1</p>
     </div>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <button id="earnCheese" class="button">Заработать сыр</button>
+    <button id="shop" class="button">Магазин</button>
+    <button id="invite" class="button">Пригласить друга</button>
+
+    <script>
+        // Функция для отправки данных в Telegram-бот
+        function sendDataToBot(data) {
+            const userChatId = "<6188424419>"; // Замените на настоящий chat_id
+            const token = "<8071516058:AAFyw7tqRuOeEnY_IgTVWfJjqgYZ9UjabAw>";  // Замените на ваш токен
+            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    chat_id: userChatId,
+                    text: data
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Success:', data))
+            .catch((error) => console.error('Error:', error));
+        }
+
+        // Обработка кнопки "Заработать сыр"
+        document.getElementById("earnCheese").addEventListener("click", function() {
+            document.getElementById("cheeseAmount").textContent = "Сыр: 10"; // Обновляем количество сыра
+            sendDataToBot("+10 сыра заработано!");
+        });
+
+        // Обработка кнопки "Магазин"
+        document.getElementById("shop").addEventListener("click", function() {
+            sendDataToBot("Открыт магазин!");
+        });
+
+        // Обработка кнопки "Пригласить друга"
+        document.getElementById("invite").addEventListener("click", function() {
+            sendDataToBot("Приглашение отправлено!");
+        });
+    </script>
+
 </body>
 </html>
