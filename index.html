@@ -48,65 +48,57 @@
     <button id="shop" class="button">Магазин</button>
     <button id="invite" class="button">Пригласить друга</button>
 
-    <script>
-        // Инициализация данных
-        let cheeseAmount = 0;
-        let level = 1;
-        const userId = "<6188424419>";  // Здесь должен быть ID пользователя, передаваемый через WebApp
+<script>
+    // Получаем ID пользователя через WebApp
+    const userId = new URLSearchParams(window.location.search).get("user_id");  // Получаем ID из URL
 
-        // Функция для получения данных пользователя
-        async function getUserData(userId) {
-            const response = await fetch(`http://127.0.0.1:5000/get_user_data/${userId}`);
-            if (response.ok) {
-                const data = await response.json();
-                cheeseAmount = data.cheese;
-                level = data.upgrade;
-                updateStats();
-            }
+    // Инициализация данных
+    let cheeseAmount = 0;
+    let level = 1;
+
+    // Функция для получения данных пользователя
+    async function getUserData(userId) {
+        const response = await fetch(`http://127.0.0.1:5000/get_user_data/${userId}`);
+        if (response.ok) {
+            const data = await response.json();
+            cheeseAmount = data.cheese;
+            level = data.upgrade;
+            updateStats();
         }
+    }
 
-        // Функция для обновления данных пользователя
-        async function updateUserData(userId, cheese, upgrade) {
-            await fetch('http://127.0.0.1:5000/update_user_data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    cheese: cheese,
-                    upgrade: upgrade
-                })
-            });
-        }
-
-        // Обновление данных на Web App
-        function updateStats() {
-            document.getElementById("cheeseAmount").textContent = "Сыр: " + cheeseAmount;
-            document.getElementById("level").textContent = "Уровень: " + level;
-        }
-
-        // Обработка кнопки "Заработать сыр"
-        document.getElementById("earnCheese").addEventListener("click", function() {
-            cheeseAmount += 1; // Добавление 1 сыра за клик
-            level += 1; // Увеличение уровня
-            updateStats(); // Обновление данных на странице
-            updateUserData(userId, cheeseAmount, level);  // Обновление данных через API
+    // Функция для обновления данных пользователя
+    async function updateUserData(userId, cheese, upgrade) {
+        await fetch('http://127.0.0.1:5000/update_user_data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                cheese: cheese,
+                upgrade: upgrade
+            })
         });
+    }
 
-        // Обработка кнопки "Магазин"
-        document.getElementById("shop").addEventListener("click", function() {
-            // Здесь можно добавить логику для открытия магазина
-        });
+    // Обновление данных на Web App
+    function updateStats() {
+        document.getElementById("cheeseAmount").textContent = "Сыр: " + cheeseAmount;
+        document.getElementById("level").textContent = "Уровень: " + level;
+    }
 
-        // Обработка кнопки "Пригласить друга"
-        document.getElementById("invite").addEventListener("click", function() {
-            // Логика для приглашения друга
-        });
+    // Обработка кнопки "Заработать сыр"
+    document.getElementById("earnCheese").addEventListener("click", function() {
+        cheeseAmount += 1; // Добавление 1 сыра за клик
+        level += 1; // Увеличение уровня
+        updateStats(); // Обновление данных на странице
+        updateUserData(userId, cheeseAmount, level);  // Обновление данных через API
+    });
 
-        // Получение начальных данных пользователя при загрузке страницы
-        getUserData(userId);
-    </script>
+    // Получение начальных данных пользователя при загрузке страницы
+    getUserData(userId);
+</script>
 
 </body>
 </html>
