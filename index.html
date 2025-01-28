@@ -28,37 +28,42 @@
 <button class="button" onclick="earnCheese()">🐀 Фарми сыр</button>
 
 <script>
-    // Получаем ID пользователя из URL
+    // Получаем ID пользователя из параметров URL
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('user_id');  // ID передается через URL
 
+    if (!userId) {
+        console.error('Ошибка: не найден user_id в URL');
+        alert('Не найден user_id в URL.');
+    }
+
     // Получаем данные с сервера для пользователя
     async function fetchUserData() {
-    try {
-        const response = await fetch(`http://192.168.0.111:5000/get_user_data/${userId}`);
-        const data = await response.json();
-        if (response.ok) {
-            // Обновляем UI с актуальными данными
-            updateUI(data.cheese, data.upgrade);
-        } else {
-            console.error('Ошибка при получении данных пользователя');
+        try {
+            const response = await fetch(`http://192.168.0.111:5000/get_user_data/${userId}`);
+            const data = await response.json();
+            if (response.ok) {
+                // Обновляем UI с актуальными данными
+                updateUI(data.cheese, data.upgrade);
+            } else {
+                console.error('Ошибка при получении данных пользователя');
+            }
+        } catch (error) {
+            console.error('Ошибка при запросе данных с сервера:', error);
         }
-    } catch (error) {
-        console.error('Ошибка при запросе данных с сервера:', error);
     }
-}
 
-setInterval(fetchUserData, 5000); // Запрос данных каждые 5 секунд
+    setInterval(fetchUserData, 5000); // Запрос данных каждые 5 секунд
 
-
+    // Функция фарма сыра
     async function earnCheese() {
         try {
-            const response = await fetch('http://192.168.0.111:5000/earn_cheese', {  // Используем HTTPS
+            const response = await fetch('http://192.168.0.111:5000/earn_cheese', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ user_id: userId }),
+                body: JSON.stringify({ user_id: userId }), // Передаем user_id для обновления данных
             });
 
             const data = await response.json();
