@@ -64,8 +64,8 @@
 
             if (response.ok) {
                 // Сохраняем данные в localStorage
-                localStorage.setItem('cheese', data.cheese);
-                localStorage.setItem('upgrade', data.upgrade);
+                localStorage.setItem(`cheese_${userId}`, data.cheese);
+                localStorage.setItem(`upgrade_${userId}`, data.upgrade);
 
                 // Обновляем интерфейс
                 updateUI(data.cheese, data.upgrade);
@@ -86,8 +86,8 @@
     // Инициализация данных при загрузке страницы
     window.onload = function () {
         // Загружаем данные из localStorage, если они там есть
-        const savedCheese = localStorage.getItem('cheese');
-        const savedUpgrade = localStorage.getItem('upgrade');
+        const savedCheese = localStorage.getItem(`cheese_${userId}`);
+        const savedUpgrade = localStorage.getItem(`upgrade_${userId}`);
 
         if (savedCheese && savedUpgrade) {
             updateUI(savedCheese, savedUpgrade);
