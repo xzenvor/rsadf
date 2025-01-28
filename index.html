@@ -49,35 +49,36 @@
         }
     }
 
-    // Функция для фарма сыра
-    async function earnCheese() {
-        try {
-            console.log("Нажата кнопка фарма сыра...");
-            const response = await fetch('https://9625-192-162-210-89.ngrok-free.app/earn_cheese', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ user_id: userId }),
-            });
+// Функция для фарма сыра
+async function earnCheese() {
+    try {
+        console.log("Нажата кнопка фарма сыра...");
+        const response = await fetch('https://9625-192-162-210-89.ngrok-free.app/earn_cheese', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_id: userId }),
+        });
 
-            if (!response.ok) {
-                console.error("Ошибка при запросе данных для фарма сыра:", response.statusText);
-                return;
-            }
-
-            const data = await response.json();
-
-            // Сохраняем данные в localStorage
-            localStorage.setItem('cheese', data.cheese);
-            localStorage.setItem('upgrade', data.upgrade);
-
-            // Обновляем интерфейс
-            updateUI(data.cheese, data.upgrade);
-        } catch (error) {
-            console.error('Ошибка при запросе данных для фарма сыра:', error);
+        if (!response.ok) {
+            console.error("Ошибка при запросе данных для фарма сыра:", response.statusText);
+            return;
         }
+
+        const data = await response.json();
+
+        // Сохраняем данные в localStorage
+        localStorage.setItem('cheese', data.cheese);
+        localStorage.setItem('upgrade', data.upgrade);
+
+        // Обновляем интерфейс
+        updateUI(data.cheese, data.upgrade);
+    } catch (error) {
+        console.error('Ошибка при запросе данных для фарма сыра:', error);
     }
+}
+
 
     // Функция для обновления UI
     function updateUI(cheese, upgrade) {
