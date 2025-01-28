@@ -1,1 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rat Kombat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .stats {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
 
+    <h1>Добро пожаловать в Rat Kombat!</h1>
+    <div class="stats">
+        <p><strong>Ваши данные:</strong></p>
+        <p id="cheeseAmount">Сыр: 0</p>
+        <p id="level">Уровень: 1</p>
+    </div>
+
+    <button id="earnCheese" class="button">Заработать сыр</button>
+    <button id="shop" class="button">Магазин</button>
+    <button id="invite" class="button">Пригласить друга</button>
+
+    <script>
+        // Инициализация данных
+        let cheeseAmount = 0;
+        let level = 1;
+
+        // Функция для отправки данных в Telegram-бот
+        function sendDataToBot(data) {
+            const userChatId = "<USER_CHAT_ID>"; // Замените на настоящий chat_id
+            const token = "<YOUR_BOT_TOKEN>";  // Замените на ваш токен
+            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    chat_id: userChatId,
+                    text: data
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Success:', data))
+            .catch((error) => console.error('Error:', error));
+        }
+
+        // Обновление данных на Web App
+        function updateStats() {
+            document.getElementById("cheeseAmount").textContent = "Сыр: " + cheeseAmount;
+            document.getElementById("level").textContent = "Уровень: " + level;
+        }
+
+        // Обработка кнопки "Заработать сыр"
+        document.getElementById("earnCheese").addEventListener("click", function() {
+            cheeseAmount += 10; // Добавление сыра
+            level += 1; // Увеличение уровня
+            updateStats(); // Обновление данных на странице
+            sendDataToBot(`+10 сыра и новый уровень! Сыр: ${cheeseAmount}, Уровень: ${level}`);
+        });
+
+        // Обработка кнопки "Магазин"
+        document.getElementById("shop").addEventListener("click", function() {
+            sendDataToBot("Открыт магазин!");
+        });
+
+        // Обработка кнопки "Пригласить друга"
+        document.getElementById("invite").addEventListener("click", function() {
+            sendDataToBot("Приглашение отправлено!");
+        });
+    </script>
+
+</body>
+</html>
