@@ -68,8 +68,9 @@
     }
 
     // Функция для обновления данных пользователя
-    async function updateUserData(userId, cheese, upgrade) {
-        await fetch('http://127.0.0.1:5000/update_user_data', {
+async function updateUserData(userId, cheese, upgrade) {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/update_user_data', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -80,13 +81,17 @@
                 upgrade: upgrade
             })
         });
+        if (response.ok) {
+            console.log("Данные обновлены!");
+            updateStats();  // Обновляем данные на странице
+        } else {
+            console.error("Ошибка обновления данных.");
+        }
+    } catch (error) {
+        console.error("Ошибка сети:", error);
     }
+}
 
-    // Обновление данных на Web App
-    function updateStats() {
-        document.getElementById("cheeseAmount").textContent = "Сыр: " + cheeseAmount;
-        document.getElementById("level").textContent = "Уровень: " + level;
-    }
 
     // Обработка кнопки "Заработать сыр"
     document.getElementById("earnCheese").addEventListener("click", function() {
