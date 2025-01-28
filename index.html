@@ -28,8 +28,21 @@
 <button class="button" onclick="earnCheese()">🐀 Фарми сыр</button>
 
 <script>
+    // Получаем ID пользователя из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('user_id');  // ID передается через URL
+
     // Получаем данные с сервера для пользователя
-    let currentUserId = 6188424419;  // Используй тот же ID, что и в боте
+    async function fetchUserData() {
+        const response = await fetch(`http://127.0.0.1:5000/get_user_data/${userId}`);
+        const data = await response.json();
+        if (response.ok) {
+            // Обновляем UI
+            updateUI(data.cheese, data.upgrade);
+        } else {
+            console.error('Ошибка при получении данных пользователя');
+        }
+    }
 
     async function earnCheese() {
         const response = await fetch('http://127.0.0.1:5000/earn_cheese', {
@@ -37,7 +50,7 @@
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user_id: currentUserId }),
+            body: JSON.stringify({ user_id: userId }),
         });
 
         const data = await response.json();
@@ -60,12 +73,9 @@
         document.getElementById('upgrade-level').textContent = `Уровень: ${upgrade}`;
     }
 
-    // Инициализация данных из localStorage при загрузке страницы
+    // Инициализация данных при загрузке страницы
     window.onload = function () {
-        const cheese = localStorage.getItem('cheese') || 0;
-        const upgrade = localStorage.getItem('upgrade') || 1;
-
-        updateUI(cheese, upgrade);
+        fetchUserData();
     };
 </script>
 
