@@ -34,7 +34,7 @@
 
     // Получаем данные с сервера для пользователя
     async function fetchUserData() {
-        const response = await fetch(`http://192.168.0.X:5000/get_user_data/${userId}`);
+        const response = await fetch(`http://192.168.0.111:5000/get_user_data/${userId}`);
         const data = await response.json();
         if (response.ok) {
             // Обновляем UI
@@ -45,7 +45,7 @@
     }
 
     async function earnCheese() {
-        const response = await fetch('http://192.168.0.X:5000/earn_cheese', {
+        const response = await fetch('http://192.168.0.111:5000/earn_cheese', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
