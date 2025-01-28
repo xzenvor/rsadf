@@ -62,14 +62,10 @@
 
     // Инициализация данных из localStorage при загрузке страницы
     window.onload = function () {
-        const cheese = localStorage.getItem('cheese');
-        const upgrade = localStorage.getItem('upgrade');
+        const cheese = localStorage.getItem('cheese') || 0;
+        const upgrade = localStorage.getItem('upgrade') || 1;
 
-        if (cheese && upgrade) {
-            updateUI(cheese, upgrade);
-        } else {
-            console.error('Нет данных для пользователя');
-        }
+        updateUI(cheese, upgrade);
     };
 </script>
 
